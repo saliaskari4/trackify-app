@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // 🟢 Added useNavigate
-// 🟢 Firebase imports
-import { db, auth } from '../firebase/config'; // 🟢 Added auth
-import { collection, onSnapshot, query, orderBy, onAuthStateChanged } from 'firebase/firestore';
+import { Link, useNavigate } from 'react-router-dom'; 
+import { db, auth } from '../firebase/config'; 
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const Analytics = () => {
-  const navigate = useNavigate(); // 🟢 Hook initialize kiya
+  const navigate = useNavigate(); 
   const [isLoading, setIsLoading] = useState(true);
   const [expenses, setExpenses] = useState([]);
   const [stats, setStats] = useState({
@@ -15,19 +15,16 @@ const Analytics = () => {
     categoryData: {}
   });
 
-  // 🟢 Logout Functionality
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      navigate('/'); // Logout ke baad landing page par redirect
+      navigate('/'); 
     } catch (error) {
       console.error("Logout Error:", error);
     }
   };
 
-  // 🟣 Firebase se data fetch karna aur calculations
   useEffect(() => {
-    // 🟢 Safety Check: Agar user login nahi hai to redirect karein
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
         navigate('/');
@@ -46,12 +43,11 @@ const Analytics = () => {
         const amount = Number(data.amount || 0);
         total += amount;
         
-        // Category grouping
         catMap[data.category] = (catMap[data.category] || 0) + amount;
         items.push({ id: doc.id, ...data });
       });
 
-      // Top Category nikalna
+      
       const topCat = Object.keys(catMap).length > 0 
         ? Object.keys(catMap).reduce((a, b) => catMap[a] > catMap[b] ? a : b) 
         : 'N/A';
@@ -91,7 +87,7 @@ const Analytics = () => {
             <Link to="/categories" className="hover:text-white transition-colors">Categories</Link>
             <Link to="/settings" className="hover:text-white transition-colors">Settings</Link>
           </div>
-          {/* 🟢 Functional Logout Button */}
+          
           <button 
             onClick={handleLogout} 
             className="text-xs font-bold text-red-500 hover:text-red-400 transition-colors uppercase tracking-widest"
@@ -204,7 +200,6 @@ const Analytics = () => {
   );
 };
 
-// ... Sub-components remain the same
 const InsightCard = ({ label, value, icon }) => (
   <div className="bg-[#161b22] border border-gray-800 p-6 rounded-[2rem] hover:border-[#4ade80]/20 transition-all group relative overflow-hidden">
     <div className="flex items-center justify-between mb-4">

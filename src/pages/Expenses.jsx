@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
 import { db, auth } from "../firebase/config";
-import { collection, addDoc, query, onSnapshot, orderBy, serverTimestamp, where, deleteDoc, doc, onAuthStateChanged } from 'firebase/firestore';
+import { collection, addDoc, query, onSnapshot, orderBy, serverTimestamp, where, deleteDoc, doc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const Expenses = () => {
   const navigate = useNavigate(); 
